@@ -32,7 +32,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             character_module_1.CharactersModule,
         ],
-        providers: [serviceApi_1.OpenAiService],
+        providers: [serviceApi_1.GeminiService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

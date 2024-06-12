@@ -16,11 +16,11 @@ exports.CharactersController = void 0;
 const common_1 = require("@nestjs/common");
 const characters_service_1 = require("../service/characters.service");
 const jwt_auth_guard_1 = require("../jwt-auth.guard");
-const serviceApi_1 = require("../service/serviceApi");
+const create_character_dto_1 = require("../DTOs/create-character.dto");
+const update_character_dto_1 = require("../DTOs/update-character.dto");
 let CharactersController = class CharactersController {
-    constructor(charactersService, openAiService) {
+    constructor(charactersService) {
         this.charactersService = charactersService;
-        this.openAiService = openAiService;
     }
     async create(createCharacterDto) {
         return this.charactersService.create(createCharacterDto);
@@ -37,8 +37,14 @@ let CharactersController = class CharactersController {
     async delete(id) {
         return this.charactersService.remove(id);
     }
-    async generateBackground(character) {
-        return this.openAiService.generateCharacterBackground(character);
+    async generateBackground(id) {
+        return this.charactersService.generateCharacterBackground(id);
+    }
+    async createRandom(level) {
+        return this.charactersService.createRandomCharacter(level);
+    }
+    async generateAdventure(characterIds) {
+        return this.charactersService.generateAdventure(characterIds);
     }
 };
 exports.CharactersController = CharactersController;
@@ -47,7 +53,7 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_character_dto_1.CreateCharacterDto]),
     __metadata("design:returntype", Promise)
 ], CharactersController.prototype, "create", null);
 __decorate([
@@ -71,7 +77,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, update_character_dto_1.UpdateCharacterDto]),
     __metadata("design:returntype", Promise)
 ], CharactersController.prototype, "update", null);
 __decorate([
@@ -84,15 +90,30 @@ __decorate([
 ], CharactersController.prototype, "delete", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Post)('generate-background'),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Post)('generate-background/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CharactersController.prototype, "generateBackground", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('random'),
+    __param(0, (0, common_1.Body)('level')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], CharactersController.prototype, "createRandom", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('generate-adventure'),
+    __param(0, (0, common_1.Body)('characterIds')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], CharactersController.prototype, "generateAdventure", null);
 exports.CharactersController = CharactersController = __decorate([
     (0, common_1.Controller)('characters'),
-    __metadata("design:paramtypes", [characters_service_1.CharactersService,
-        serviceApi_1.OpenAiService])
+    __metadata("design:paramtypes", [characters_service_1.CharactersService])
 ], CharactersController);
 //# sourceMappingURL=characters.controller.js.map

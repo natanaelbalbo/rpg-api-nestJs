@@ -24,15 +24,21 @@
 /// <reference types="mongoose/types/inferschematype" />
 /// <reference types="mongoose/types/inferrawdoctype" />
 import { Model } from 'mongoose';
-import { Character, CharacterDocument } from 'src/schema/character.schema';
+import { Character, CharacterDocument } from 'src/character.schema';
 import { CreateCharacterDto } from 'src/DTOs/create-character.dto';
 import { UpdateCharacterDto } from 'src/DTOs/update-character.dto';
+import { GeminiService } from './serviceApi';
 export declare class CharactersService {
     private characterModel;
-    constructor(characterModel: Model<CharacterDocument>);
+    private readonly geminiService;
+    constructor(characterModel: Model<CharacterDocument>, geminiService: GeminiService);
     create(createCharacterDto: CreateCharacterDto): Promise<Character>;
     findAll(): Promise<Character[]>;
     findOne(id: string): Promise<Character>;
     update(id: string, updateCharacterDto: UpdateCharacterDto): Promise<Character>;
     remove(id: string): Promise<Character>;
+    findAllByIds(ids: string[]): Promise<Character[]>;
+    createRandomCharacter(level: number): Promise<Character>;
+    generateCharacterBackground(characterId: string): Promise<string>;
+    generateAdventure(characterIds: string[]): Promise<string>;
 }

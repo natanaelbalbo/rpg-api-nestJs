@@ -5,7 +5,7 @@ import { AuthModule } from './auth.module';
 import { UsersModule } from './users.module';
 import { CharactersModule } from './character.module';
 import { LoggingMiddleware } from './logging.middleware';
-import { OpenAiService } from './service/serviceApi';  
+import { GeminiService } from './service/serviceApi';  
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { OpenAiService } from './service/serviceApi';
     UsersModule,
     CharactersModule,  
   ],
-  providers: [OpenAiService],  
+  providers: [GeminiService],  
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

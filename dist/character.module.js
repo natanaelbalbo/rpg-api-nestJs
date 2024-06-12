@@ -20,7 +20,7 @@ exports.CharactersModule = CharactersModule = __decorate([
     (0, common_1.Module)({
         imports: [mongoose_1.MongooseModule.forFeature([{ name: character_schema_1.Character.name, schema: character_schema_1.CharacterSchema }])],
         controllers: [characters_controller_1.CharactersController],
-        providers: [characters_service_1.CharactersService, serviceApi_1.OpenAiService],
+        providers: [characters_service_1.CharactersService, serviceApi_1.GeminiService],
     })
 ], CharactersModule);
 //# sourceMappingURL=character.module.js.map

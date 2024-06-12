@@ -8,12 +8,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoggingMiddleware = void 0;
 const common_1 = require("@nestjs/common");
+const fs = require("fs");
+const path = require("path");
 let LoggingMiddleware = class LoggingMiddleware {
     use(req, res, next) {
         const start = Date.now();
         res.on('finish', () => {
             const duration = Date.now() - start;
-            console.log(`${req.method} ${req.originalUrl} - ${duration}ms`);
+            const log = {
+                method: req.method,
+                url: req.originalUrl,
+                statusCode: res.statusCode,
+                duration: `${duration}ms`
+            };
+            const logFilePath = path.join(__dirname, '../logs/requests.json');
+            fs.appendFile(logFilePath, JSON.stringify(log) + '\n', err => {
+                if (err) {
+                    console.error('Error writing log file', err);
+                }
+            });
         });
         next();
     }
