@@ -17,16 +17,49 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_schema_1 = require("../schema/user.schema");
+const bcrypt = require("bcrypt");
+const user_not_found_exception_1 = require("../exceptions/user-not-found.exception");
 let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
     }
+    async create(createUserDto) {
+        const existingUser = await this.userModel.findOne({ username: createUserDto.username }).exec();
+        if (existingUser) {
+            throw new common_1.ConflictException('User already exists');
+        }
+        const createdUser = new this.userModel(createUserDto);
+        return createdUser.save();
+    }
+    async findAll() {
+        return this.userModel.find().exec();
+    }
     async findOne(username) {
         return this.userModel.findOne({ username }).exec();
     }
-    async create(username, password) {
-        const createdUser = new this.userModel({ username, password });
-        return createdUser.save();
+    async findById(id) {
+        const user = await this.userModel.findById(id).exec();
+        if (!user) {
+            throw new user_not_found_exception_1.UserNotFoundException(id);
+        }
+        return user;
+    }
+    async update(id, updateUserDto) {
+        const updatedUser = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
+        if (!updatedUser) {
+            throw new user_not_found_exception_1.UserNotFoundException(id);
+        }
+        return updatedUser;
+    }
+    async remove(id) {
+        const removedUser = await this.userModel.findByIdAndDelete(id).exec();
+        if (!removedUser) {
+            throw new user_not_found_exception_1.UserNotFoundException(id);
+        }
+        return removedUser;
+    }
+    async comparePasswords(plainTextPassword, hashedPassword) {
+        return bcrypt.compare(plainTextPassword, hashedPassword);
     }
 };
 exports.UsersService = UsersService;

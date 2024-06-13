@@ -35,10 +35,22 @@ let AuthService = class AuthService {
     }
     async register(user) {
         const hashedPassword = await bcrypt.hash(user.password, 10);
-        const newUser = await this.usersService.create(user.username, hashedPassword);
-        return {
-            access_token: this.jwtService.sign({ username: newUser.username, sub: newUser._id }),
+        const createUserDto = {
+            username: user.username,
+            password: hashedPassword,
         };
+        try {
+            const newUser = await this.usersService.create(createUserDto);
+            return {
+                access_token: this.jwtService.sign({ username: newUser.username, sub: newUser._id }),
+            };
+        }
+        catch (error) {
+            if (error.code === 11000) {
+                throw new common_1.ConflictException('User already exists');
+            }
+            throw error;
+        }
     }
 };
 exports.AuthService = AuthService;

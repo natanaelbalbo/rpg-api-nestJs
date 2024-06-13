@@ -4,22 +4,23 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersModule } from './users.module';
 import { JwtStrategy } from './jwt.strategy';
-import { LocalStrategy } from './local.strategy'; 
+import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
-import { ConfigModule } from '@nestjs/config'; 
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: 'SECRET_KEY',  
+      secret: process.env.JWT_SECRET || 'SECRET_KEY', // Use uma variável de ambiente para a chave secreta
       signOptions: { expiresIn: '60m' },
     }),
-    ConfigModule.forRoot(), 
   ],
-  providers: [AuthService, JwtStrategy, LocalStrategy], 
+  providers: [AuthService, JwtStrategy, LocalStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })
 export class AuthModule {}
+
+
+

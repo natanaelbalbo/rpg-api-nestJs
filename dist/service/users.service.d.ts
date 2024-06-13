@@ -25,9 +25,15 @@
 /// <reference types="mongoose/types/inferrawdoctype" />
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schema/user.schema';
+import { CreateUserDto } from 'src/DTOs/create-user.dto';
 export declare class UsersService {
     private userModel;
     constructor(userModel: Model<UserDocument>);
+    create(createUserDto: CreateUserDto): Promise<User>;
+    findAll(): Promise<User[]>;
     findOne(username: string): Promise<User | undefined>;
-    create(username: string, password: string): Promise<User>;
+    findById(id: string): Promise<User>;
+    update(id: string, updateUserDto: Partial<CreateUserDto>): Promise<User>;
+    remove(id: string): Promise<User>;
+    comparePasswords(plainTextPassword: string, hashedPassword: string): Promise<boolean>;
 }

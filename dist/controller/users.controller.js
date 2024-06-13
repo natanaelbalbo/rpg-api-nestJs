@@ -15,32 +15,96 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("../service/users.service");
+const create_user_dto_1 = require("../DTOs/create-user.dto");
+const user_not_found_exception_1 = require("../exceptions/user-not-found.exception");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    async register(createUserDto) {
-        return this.usersService.create(createUserDto.username, createUserDto.password);
+    async create(createUserDto) {
+        try {
+            return await this.usersService.create(createUserDto);
+        }
+        catch (error) {
+            if (error.code === 11000) {
+                throw new common_1.HttpException('User already exists', common_1.HttpStatus.CONFLICT);
+            }
+            throw new common_1.HttpException(error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    async findOne(username) {
-        return this.usersService.findOne(username);
+    async findAll() {
+        return this.usersService.findAll();
+    }
+    async findById(id) {
+        try {
+            return await this.usersService.findById(id);
+        }
+        catch (error) {
+            if (error instanceof user_not_found_exception_1.UserNotFoundException) {
+                throw new common_1.HttpException(error.message, common_1.HttpStatus.NOT_FOUND);
+            }
+            throw new common_1.HttpException(error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async update(id, updateUserDto) {
+        try {
+            return await this.usersService.update(id, updateUserDto);
+        }
+        catch (error) {
+            if (error instanceof user_not_found_exception_1.UserNotFoundException) {
+                throw new common_1.HttpException(error.message, common_1.HttpStatus.NOT_FOUND);
+            }
+            throw new common_1.HttpException(error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async remove(id) {
+        try {
+            return await this.usersService.remove(id);
+        }
+        catch (error) {
+            if (error instanceof user_not_found_exception_1.UserNotFoundException) {
+                throw new common_1.HttpException(error.message, common_1.HttpStatus.NOT_FOUND);
+            }
+            throw new common_1.HttpException(error.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.UsersController = UsersController;
 __decorate([
-    (0, common_1.Post)('register'),
+    (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "register", null);
+], UsersController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(':username'),
-    __param(0, (0, common_1.Param)('username')),
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "findOne", null);
+], UsersController.prototype, "findById", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "remove", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

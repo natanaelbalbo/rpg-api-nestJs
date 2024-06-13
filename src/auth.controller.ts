@@ -50,7 +50,6 @@ export class AuthController {
       const { tokens } = await this.oauth2Client.getToken(code);
       this.oauth2Client.setCredentials(tokens);
 
-      // Exibir tokens no console para serem adicionados ao .env
       console.log('Access Token:', tokens.access_token);
       console.log('Refresh Token:', tokens.refresh_token);
 
